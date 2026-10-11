@@ -650,7 +650,7 @@ const baseExtensions: Extension[] = [
       SELECT * FROM pgr_dijkstra('SELECT id, source, target, cost, reverse_cost FROM edges', 1, 4);
       \`\`\`
 
-      This is an **external** extension, distributed as a separate package at https://www.npmjs.com/package/@electric-sql/pglite-pgrouting
+      **Proof of concept build** — not published to npm. See https://github.com/sanak/pglite/tree/pgrouting
     `,
     shortDescription: 'Routing and network analysis on top of PostGIS.',
     repo: 'https://github.com/pgRouting/pgrouting',
@@ -660,7 +660,6 @@ const baseExtensions: Extension[] = [
     importName: 'pgrouting',
     size: 1723612,
     requires: ['PostGIS'],
-    npmjsUrl: 'https://www.npmjs.com/package/@electric-sql/pglite-pgrouting',
   },
   {
     name: 'pg_textsearch',
