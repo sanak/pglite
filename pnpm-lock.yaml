@@ -65,6 +65,9 @@ importers:
       '@electric-sql/pglite-pgmq':
         specifier: workspace:*
         version: link:../packages/pglite-pgmq
+      '@electric-sql/pglite-pgrouting':
+        specifier: workspace:*
+        version: link:../packages/pglite-pgrouting
       '@electric-sql/pglite-pgtap':
         specifier: workspace:*
         version: link:../packages/pglite-pgtap
