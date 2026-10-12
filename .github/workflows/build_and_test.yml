@@ -76,6 +76,7 @@ jobs:
             packages/pglite-pg_textsearch/release
             packages/pglite-pg_uuidv7/release
             packages/pglite-postgis/release
+            packages/pglite-pgrouting/release
             packages/pglite-pgvector/release
             packages/pglite-pgmq/release
           key: wasm-build-${{ steps.postgres-pglite-commit-id.outputs.hash }}-pglite-${{ steps.pglite-version.outputs.version }}
@@ -114,6 +115,14 @@ jobs:
         with:
           name: pglite-postgis-release-files-node-v20.x
           path: ./packages/pglite-postgis/release/**
+          retention-days: 60
+
+      - name: Upload pglite-pgrouting build artifacts to Github artifacts
+        id: upload-pglite-pgrouting-release-files
+        uses: actions/upload-artifact@v7
+        with:
+          name: pglite-pgrouting-release-files-node-v20.x
+          path: ./packages/pglite-pgrouting/release/**
           retention-days: 60
 
       - name: Upload pglite-pg_hashids build artifacts to Github artifacts
@@ -347,6 +356,12 @@ jobs:
           name: pglite-postgis-release-files-node-v20.x
           path: ./packages/pglite-postgis/release/
 
+      - name: Download pglite-pgrouting build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: pglite-pgrouting-release-files-node-v20.x
+          path: ./packages/pglite-pgrouting/release/
+
       - name: Download pglite-pg_hashids build artifacts
         uses: actions/download-artifact@v8
         with:
@@ -426,6 +441,13 @@ jobs:
         with:
           name: pglite-postgis-dist-node-v${{ matrix.node }}
           path: ./packages/pglite-postgis/dist/*
+
+      - name: Upload pglite-pgrouting distribution artifact
+        id: upload-pglite-pgrouting-dist
+        uses: actions/upload-artifact@v7
+        with:
+          name: pglite-pgrouting-dist-node-v${{ matrix.node }}
+          path: ./packages/pglite-pgrouting/dist/*
 
       - name: Upload pglite-age distribution artifact
         id: upload-pglite-age-dist
@@ -516,6 +538,12 @@ jobs:
           name: pglite-postgis-release-files-node-v20.x
           path: ./packages/pglite-postgis/release/  
 
+      - name: Download pglite-pgrouting build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: pglite-pgrouting-release-files-node-v20.x
+          path: ./packages/pglite-pgrouting/release/
+
       - name: Download PGlite build artifacts
         uses: actions/download-artifact@v8
         with:
@@ -527,6 +555,12 @@ jobs:
         with:
           name: pglite-postgis-dist-node-v20.x
           path: ./packages/pglite-postgis/dist/
+
+      - name: Download pglite-pgrouting dist artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: pglite-pgrouting-dist-node-v20.x
+          path: ./packages/pglite-pgrouting/dist/
 
       - name: Download pglite-age dist artifacts
         uses: actions/download-artifact@v8
@@ -689,6 +723,12 @@ jobs:
         with:
           name: pglite-postgis-release-files-node-v20.x
           path: ./packages/pglite-postgis/release/
+
+      - name: Download pglite-pgrouting build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: pglite-pgrouting-release-files-node-v20.x
+          path: ./packages/pglite-pgrouting/release/
 
       - name: Download pglite-pg_hashids build artifacts
         uses: actions/download-artifact@v8
