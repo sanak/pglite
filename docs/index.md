@@ -258,13 +258,13 @@ onMounted(async () => {
       <p>
         This is a full PGlite Postgres running in your browser.
         <br class="hide-xs" />
-        It even includes <a href="/extensions/#pgvector">pgvector</a>!
+        It even includes <a href="./extensions/#pgvector">pgvector</a>!
       </p>
     </div>
     <ClientOnly>
       <Repl class="repl" />
     </ClientOnly>
-    <a class="link-btn" href="/repl">
+    <a class="link-btn" href="./repl">
       Try more extensions in the playground</a>
   </div>
 </div>
