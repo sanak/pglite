@@ -1,4 +1,5 @@
 <script setup>
+import { withBase } from 'vitepress'
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const positions = new Array(5).fill(0).map((_, i) => {
@@ -35,7 +36,7 @@ onUnmounted(() => {
 <template>
   <div class="custom-hero-image-wrapper">
     <div ref="heroImage" class="custom-hero-image">
-      <img src="/img/brand/icon-light.svg" class="main" />
+      <img :src="withBase('/img/brand/icon-light.svg')" class="main" />
       <div class="chain">
         <div
           class="baby"
@@ -46,7 +47,7 @@ onUnmounted(() => {
             filter: `brightness(${pos.o})`,
           }"
         >
-          <img src="/img/brand/icon-light.svg" />
+          <img :src="withBase('/img/brand/icon-light.svg')" />
         </div>
       </div>
     </div>
