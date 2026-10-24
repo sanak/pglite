@@ -1,0 +1,64 @@
+name: Deploy PoC docs to GitHub Pages
+
+on:
+  push:
+    branches: ['pgrouting']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'sanak/pglite'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # WASM is built locally (the pglite-builder image with Boost is not on Docker Hub), see scripts/pack-wasm-release.sh
+      - name: Download prebuilt WASM release files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="wasm-$(git rev-parse --short=10 HEAD:postgres-pglite)"
+          gh release download "$tag" -R "${{ github.repository }}" -p wasm-release.tar.gz -D "$RUNNER_TEMP"
+          tar -xzf "$RUNNER_TEMP/wasm-release.tar.gz"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm ts:build
+
+      - name: Build docs
+        working-directory: ./docs
+        env:
+          DOCS_BASE: /pglite/
+        run: pnpm docs:build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
