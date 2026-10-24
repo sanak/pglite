@@ -1,12 +1,15 @@
 import { defineConfig } from 'vitepress'
 
+// GitHub Pages (project site) serves the docs under /<repo>/, see .github/workflows/pages-poc.yml
+const base = process.env.DOCS_BASE ?? '/'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'en',
   title: 'PGlite',
   description: 'Lightweight WASM Postgres',
   appearance: 'force-dark',
-  base: '/',
+  base,
   cleanUrls: true,
   ignoreDeadLinks: [
     (url) => {
@@ -25,7 +28,7 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '16x16',
-        href: '/img/favicons/favicon-16x16.png',
+        href: `${base}img/favicons/favicon-16x16.png`,
       },
     ],
     [
@@ -34,7 +37,7 @@ export default defineConfig({
         rel: 'icon',
         type: 'image/png',
         sizes: '32x32',
-        href: '/img/favicons/favicon-32x32.png',
+        href: `${base}img/favicons/favicon-32x32.png`,
       },
     ],
     [
@@ -42,7 +45,7 @@ export default defineConfig({
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: '/img/favicons/apple-touch-icon.png',
+        href: `${base}img/favicons/apple-touch-icon.png`,
       },
     ],
     [
@@ -50,14 +53,14 @@ export default defineConfig({
       {
         rel: 'icon',
         type: 'image/svg+xml',
-        href: '/img/brand/icon-light.svg',
+        href: `${base}img/brand/icon-light.svg`,
       },
     ],
     [
       'meta',
       {
         property: 'og:image',
-        content: '/img/brand/og-image.png',
+        content: `${base}img/brand/og-image.png`,
       },
     ],
     [
