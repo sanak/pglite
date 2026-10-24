@@ -40,9 +40,21 @@ async function doLoadPg() {
   }
 }
 
+function withRequiredExtensions(names) {
+  const resolved = []
+  const visit = (name) => {
+    if (resolved.includes(name)) return
+    const ext = extensionsData.extensions.find((e) => e.name === name)
+    ext?.requires?.forEach(visit)
+    resolved.push(name)
+  }
+  names.forEach(visit)
+  return resolved
+}
+
 async function loadPg() {
   const extensions = Object.fromEntries(
-    enabledExtensions.value.map((extension) => {
+    withRequiredExtensions(enabledExtensions.value).map((extension) => {
       const { importName } = extensionsData.extensions.find(
         (ext) => ext.name === extension,
       )
