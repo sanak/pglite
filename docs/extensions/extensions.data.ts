@@ -634,6 +634,35 @@ const baseExtensions: Extension[] = [
     npmjsUrl: 'https://www.npmjs.com/package/@electric-sql/pglite-postgis',
   },
   {
+    name: 'pgrouting',
+    description: `
+      pgRouting extends PostGIS to provide geospatial routing and network analysis:
+      shortest paths (Dijkstra, A*, bidirectional), driving distance, TSP and more.
+
+      Requires PostGIS, which the REPL loads automatically.
+
+      Try it in the REPL:
+
+      \`\`\`sql
+      CREATE EXTENSION IF NOT EXISTS pgrouting CASCADE;
+      CREATE TABLE edges (id BIGINT, source BIGINT, target BIGINT, cost FLOAT8, reverse_cost FLOAT8);
+      INSERT INTO edges VALUES (1,1,2,1,1),(2,2,3,1,1),(3,1,3,5,5),(4,3,4,1,1),(5,2,4,4,4);
+      SELECT * FROM pgr_dijkstra('SELECT id, source, target, cost, reverse_cost FROM edges', 1, 4);
+      \`\`\`
+
+      This is an **external** extension, distributed as a separate package at https://www.npmjs.com/package/@electric-sql/pglite-pgrouting
+    `,
+    shortDescription: 'Routing and network analysis on top of PostGIS.',
+    repo: 'https://github.com/pgRouting/pgrouting',
+    docs: 'https://docs.pgrouting.org/latest/en/',
+    tags: ['postgres extension', 'external'],
+    importPath: '@electric-sql/pglite-pgrouting',
+    importName: 'pgrouting',
+    size: 2034901,
+    requires: ['PostGIS'],
+    npmjsUrl: 'https://www.npmjs.com/package/@electric-sql/pglite-pgrouting',
+  },
+  {
     name: 'pg_textsearch',
     description: `
       PostgreSQL extension for BM25 relevance-ranked full-text search.
@@ -797,6 +826,7 @@ export interface Extension {
   npmPackage?: string
   size?: number
   npmjsUrl?: string
+  requires?: string[]
 }
 
 export default {
@@ -827,16 +857,26 @@ export default {
           `
         }
         if (extension.importName && extension.importPath) {
+          // also load the extensions this one requires, e.g. PostGIS for pgRouting
+          const imported = [
+            ...(extension.requires ?? []).map((name) =>
+              baseExtensions.find((ext) => ext.name === name),
+            ),
+            extension,
+          ].filter(
+            (ext): ext is Extension => !!ext?.importName && !!ext.importPath,
+          )
+          const cascade = extension.requires?.length ? ' CASCADE' : ''
           description +=
             '\n\n' +
             dedent`
           ${'```'}js
-          import { ${extension.importName} } from '${extension.importPath}';
+          ${imported.map((ext) => `import { ${ext.importName} } from '${ext.importPath}';`).join('\n')}
           const pg = new PGlite({
-            extensions: { ${extension.importName} }
+            extensions: { ${imported.map((ext) => ext.importName).join(', ')} }
           });
           
-          await pg.exec('CREATE EXTENSION IF NOT EXISTS ${extension.importName};')
+          await pg.exec('CREATE EXTENSION IF NOT EXISTS ${extension.importName}${cascade};')
           ${'```'}
           `
         }
